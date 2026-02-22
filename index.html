@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>VPN Registration & Order</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Segoe UI', sans-serif;
+}
+
+body{
+  background:linear-gradient(135deg,#0f172a,#020617);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  color:white;
+}
+
+/* MAIN FORM */
+.container{
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(20px);
+  width:400px;
+  padding:30px;
+  border-radius:18px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.6);
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+h2{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+label{
+  font-size:14px;
+  margin-top:15px;
+  display:block;
+  color:#94a3b8;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin-top:6px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.1);
+  background:#1e293b;
+  color:white;
+}
+
+input::placeholder{
+  color:#64748b;
+}
+
+/* CUSTOM DROPDOWN */
+.custom-select{
+  position:relative;
+  margin-top:6px;
+}
+
+.select-selected{
+  background:#1e293b;
+  padding:12px;
+  border-radius:10px;
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,0.1);
+}
+
+.select-items{
+  position:absolute;
+  background:#0f172a;
+  width:100%;
+  border-radius:10px;
+  margin-top:5px;
+  overflow:hidden;
+  display:none;
+  border:1px solid rgba(255,255,255,0.1);
+  z-index:99;
+}
+
+.select-items div{
+  padding:12px;
+  cursor:pointer;
+}
+
+.select-items div:hover{
+  background:#2563eb;
+}
+
+.price{
+  margin-top:15px;
+  font-weight:bold;
+  color:#38bdf8;
+  text-align:center;
+}
+
+button{
+  width:100%;
+  margin-top:20px;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:#2563eb;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#1d4ed8;
+}
+
+/* MODAL */
+.modal{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.85);
+  justify-content:center;
+  align-items:center;
+}
+
+.modal-content{
+  background:#0f172a;
+  width:360px;
+  padding:25px;
+  border-radius:18px;
+  text-align:center;
+  border:1px solid rgba(255,255,255,0.1);
+  position:relative;
+}
+
+.close{
+  position:absolute;
+  top:10px;
+  right:15px;
+  font-size:20px;
+  cursor:pointer;
+  color:#94a3b8;
+}
+
+.close:hover{
+  color:white;
+}
+
+.pay-select{
+  display:flex;
+  gap:10px;
+  margin-top:15px;
+}
+
+.pay-select button{
+  flex:1;
+  padding:10px;
+  border-radius:10px;
+}
+
+.gcash-btn{ background:#2563eb; }
+.maya-btn{ background:#16a34a; }
+
+.active-btn{
+  outline:2px solid white;
+}
+
+.payment-box{
+  display:none;
+  margin-top:15px;
+}
+
+.qr-img{
+  width:100%;
+  border-radius:12px;
+  margin:10px 0;
+  background:white;
+  padding:5px;
+}
+
+.number{
+  background:#1e293b;
+  padding:10px;
+  border-radius:10px;
+  font-weight:bold;
+  color:#38bdf8;
+}
+
+.copy-btn{
+  background:#22c55e;
+  margin-top:10px;
+}
+
+.confirm-btn{
+  background:#f59e0b;
+  margin-top:10px;
+}
+
+.success-card{
+  display:none;
+  margin-top:20px;
+  background:#111827;
+  padding:20px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.1);
+  text-align:left;
+  animation:fadeIn 0.4s ease;
+}
+
+.success-card h4{
+  color:#22c55e;
+  margin-bottom:10px;
+}
+
+.success-card a{
+  color:#38bdf8;
+  font-weight:bold;
+  text-decoration:none;
+}
+
+.success-card a:hover{
+  text-decoration:underline;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>VPN Registration</h2>
+
+  <label>Email (Gmail only)</label>
+  <input type="email" id="email" placeholder="example@gmail.com">
+
+  <label>VPN Package</label>
+  <div class="custom-select">
+    <div class="select-selected" onclick="toggleSelect()">Select Package</div>
+    <div class="select-items" id="selectItems">
+      <div onclick="selectPackage('300','1 Year PLAN 1MB - 300 pesos')">1 Year PLAN 1MB - 300 pesos</div>
+      <div onclick="selectPackage('1000','1 Year PLAN 2MB - 1000 pesos')">1 Year PLAN 2MB - 1000 pesos</div>
+    </div>
+  </div>
+
+  <div class="price" id="priceDisplay"></div>
+
+  <button onclick="openModal()">ORDER NOW</button>
+</div>
+
+<div class="modal" id="paymentModal" onclick="outsideClick(event)">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">✕</span>
+    <h3>Select Payment</h3>
+
+    <div class="pay-select">
+      <button id="gcashBtn" class="gcash-btn" onclick="showPayment('gcash')">GCash</button>
+      <button id="mayaBtn" class="maya-btn" onclick="showPayment('maya')">Maya</button>
+    </div>
+
+    <div class="payment-box" id="paymentBox">
+      <img id="qrImage" class="qr-img" src="">
+      <div class="number" id="payNumber"></div>
+      <button class="copy-btn" onclick="copyNumber()">COPY NUMBER</button>
+      <button class="confirm-btn" onclick="confirmPayment()">CONFIRM PAYMENT</button>
+    </div>
+
+    <div class="success-card" id="successCard">
+      <h4>✅ Payment Submitted!</h4>
+      <p>
+        Once payment is completed, kindly send the reference number through Messenger.
+      </p>
+      <p style="margin-top:8px;">
+        We will email the VPN script to you, which you can copy and paste into your MikroTik terminal.
+      </p>
+      <p style="margin-top:15px;">
+        👉 <a href="https://www.facebook.com/marvinqmarvida/" target="_blank">
+        Message us on Facebook
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let selectedPrice="";
+let activePayment="";
+
+function toggleSelect(){
+  let items=document.getElementById("selectItems");
+  items.style.display=items.style.display==="block"?"none":"block";
+}
+
+function selectPackage(price,text){
+  selectedPrice=price;
+  document.querySelector(".select-selected").innerText=text;
+  document.getElementById("selectItems").style.display="none";
+  document.getElementById("priceDisplay").innerText="Total Price: ₱"+price;
+}
+
+function openModal(){
+  let email=document.getElementById("email").value;
+  if(!email.endsWith("@gmail.com")){
+    alert("Use Gmail only");
+    return;
+  }
+  if(selectedPrice===""){
+    alert("Select package first");
+    return;
+  }
+  document.getElementById("paymentModal").style.display="flex";
+  document.getElementById("paymentBox").style.display="none";
+  document.getElementById("successCard").style.display="none";
+  activePayment="";
+  removeActive();
+}
+
+function closeModal(){
+  document.getElementById("paymentModal").style.display="none";
+}
+
+function outsideClick(e){
+  if(e.target.id==="paymentModal"){
+    closeModal();
+  }
+}
+
+function showPayment(type){
+  let box=document.getElementById("paymentBox");
+  let qr=document.getElementById("qrImage");
+  let number=document.getElementById("payNumber");
+
+  if(activePayment===type){
+    box.style.display="none";
+    activePayment="";
+    removeActive();
+    return;
+  }
+
+  if(type==="gcash"){
+    qr.src="YOUR_GCASH_QR_LINK";
+    number.innerText="0966-508-4666";
+  }
+
+  if(type==="maya"){
+    qr.src="YOUR_MAYA_QR_LINK";
+    number.innerText="09XX-XXX-XXXX";
+  }
+
+  box.style.display="block";
+  document.getElementById("successCard").style.display="none";
+  activePayment=type;
+  setActive(type);
+}
+
+function setActive(type){
+  removeActive();
+  document.getElementById(type+"Btn").classList.add("active-btn");
+}
+
+function removeActive(){
+  document.getElementById("gcashBtn").classList.remove("active-btn");
+  document.getElementById("mayaBtn").classList.remove("active-btn");
+}
+
+function copyNumber(){
+  let number=document.getElementById("payNumber").innerText;
+  navigator.clipboard.writeText(number);
+  alert("Copied!");
+}
+
+function confirmPayment(){
+  if(activePayment===""){
+    alert("Select payment method first.");
+    return;
+  }
+
+  document.getElementById("paymentBox").style.display="none";
+  document.getElementById("successCard").style.display="block";
+}
+</script>
+
+</body>
+</html>
